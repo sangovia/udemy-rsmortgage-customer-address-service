@@ -39,7 +39,7 @@ public class CustomerAddressController extends AbstractRestController {
             produces = {"application/json", "application/xml"})
     @ResponseStatus(HttpStatus.CREATED)
     public void createCustomerAddress(@RequestBody Address address,
-                                 HttpServletRequest request, HttpServletResponse response) {
+                                 HttpServletRequest request, HttpServletResponse response) throws Exception {
     	Address createdAddress = this.customerAddressService.createAddress(address);
         response.setHeader("Location", request.getRequestURL().append("/").append(createdAddress.getId()).toString());
     }
@@ -108,7 +108,7 @@ public class CustomerAddressController extends AbstractRestController {
             produces = {"application/json", "application/xml"})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateCustomerAddress(@PathVariable("id") Long id, @RequestBody Address address,
-                                 HttpServletRequest request, HttpServletResponse response) {
+                                 HttpServletRequest request, HttpServletResponse response) throws Exception {
         checkResourceFound(this.customerAddressService.getAddress(id));
         if (id != address.getId()) throw new HTTP400Exception("ID doesn't match!");
         this.customerAddressService.updateAddress(address);

@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.rollingstone.dao.jpa.RsMortgageCustomerAddressRepository;
+import com.rollingstone.domain.Account;
 import com.rollingstone.domain.Address;
 import com.rollingstone.domain.Customer;
 
@@ -33,20 +34,68 @@ public class RsMortgageCustomerAddressService {
 
     @Autowired
     GaugeService gaugeService;
+    
+    @Autowired
+  	private CustomerClient customerClient;
 
     public RsMortgageCustomerAddressService() {
     }
 
-    public Address createAddress(Address address) {
-        return customerAddressRepository.save(address);
+    public Address createAddress(Address address) throws Exception {
+    	Address createdAddress = null;
+    	if (address != null && address.getCustomer() != null){
+    		
+    		log.info("In service account create"+ address.getCustomer().getId());
+    		if (customerClient == null){
+        		log.info("In customerClient null got customer");
+    		}
+    		else {
+    			log.info("In customerClient not null got customer");
+    		}
+    		
+    		Customer customer = customerClient.getCustomer((new Long(address.getCustomer().getId())));
+    		
+    		if (customer != null){
+    			createdAddress  = customerAddressRepository.save(address);
+    		}else {
+    			log.info("Invalid Customer");
+    			throw new Exception("Invalid Customer");
+    		}
+    	}
+    	else {
+    			throw new Exception("Invalid Customer");
+    	}
+        return createdAddress;
     }
 
     public Address getAddress(long id) {
         return customerAddressRepository.findOne(id);
     }
 
-    public void updateAddress(Address address) {
-    	customerAddressRepository.save(address);
+    public void updateAddress(Address address) throws Exception {
+    	Address createdAddress = null;
+    	if (address != null && address.getCustomer() != null){
+    		
+    		log.info("In service account create"+ address.getCustomer().getId());
+    		if (customerClient == null){
+        		log.info("In customerClient null got customer");
+    		}
+    		else {
+    			log.info("In customerClient not null got customer");
+    		}
+    		
+    		Customer customer = customerClient.getCustomer((new Long(address.getCustomer().getId())));
+    		
+    		if (customer != null){
+    			createdAddress  = customerAddressRepository.save(address);
+    		}else {
+    			log.info("Invalid Customer");
+    			throw new Exception("Invalid Customer");
+    		}
+    	}
+    	else {
+    			throw new Exception("Invalid Customer");
+    	}
     }
 
     public void deleteAddress(Long id) {
